@@ -40,3 +40,15 @@ def loadPackages(truck, hashTable):
         truck.packages.append(closest_package)
         packagesToLoad.remove(closest_package)
 
+
+def deliverPackage(truck, package):
+    # Update the package's status and delivery time
+    package.status = "Delivered"
+    package.deliveryTime = currentTime  # You'll need to keep track of the current time
+    # Remove the package from the truck's list of packages
+    truck.packages.remove(package)
+    # Update the truck's total mileage and total delivery time
+    truck.totalMileage += distanceBetween(truck.currentLocation, package.address)
+    truck.totalDeliveryTime += distanceBetween(truck.currentLocation, package.address) / truck.speed
+    # Update the truck's current location
+    truck.currentLocation = package.address

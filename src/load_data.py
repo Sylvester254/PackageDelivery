@@ -29,8 +29,8 @@ addressData = []
 def loadAddressData(addressData):
     with open('data/addressCSV.csv', 'r') as file:
         reader = csv.reader(file)
+        # For each row in the CSV file, add the address to the list
         for row in reader:
-            location_name, street_address = row[1], row[2]
-            addressData.append((location_name, street_address))
-        print(f"Loaded {len(addressData)} addresses into addressData.")
-        # print(addressData)
+            address = ', '.join(row[1:])  # Join all parts of the address with a comma
+            addressData.append(address)
+        print(addressData)

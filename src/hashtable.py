@@ -16,3 +16,7 @@ class HashTable:
             if k == key:
                 return i
         return None
+
+    def remove(self, key):
+        hash_index = self._hash(key)
+        self.table[hash_index] = [(k, i) for k, i in self.table[hash_index] if k != key]
