@@ -1,10 +1,7 @@
-from .distance import distanceBetween
-from .load_data import addressData
+from .distance import distanceBetween, minDistanceFrom
 
 
-def loadPackages(truck, hashTable):
-    # Assuming packagesToLoad is a list of packages that need to be loaded
-    packagesToLoad = [item for sublist in hashTable.table for key, item in sublist if item.status == "At hub"]
+def loadPackages(truck, packagesToLoad, hashTable):
     # Packages that must go out for delivery on the same truck
     sameTruckPackages = [13, 14, 15, 16, 19, 20]
     # Packages that may only be delivered by truck 2
@@ -12,33 +9,57 @@ def loadPackages(truck, hashTable):
     # Packages that cannot leave the hub before 9:05 a.m.
     lateDeparturePackages = [6, 25, 28, 32]
 
-    # Load packages that must go out for delivery on the same truck
+    # Remove the late departure packages from the packagesToLoad list
+    if truck.id != 3:
+        for id in lateDeparturePackages:
+            package = hashTable.retrieve(str(id))
+            if package and package in packagesToLoad:
+                packagesToLoad.remove(package)
+
+    # Load packages that have specific truck requirements
     if truck.id == 1:
         for id in sameTruckPackages:
-            package = hashTable.retrieve(id)
+            package = hashTable.retrieve(str(id))
             if package and package in packagesToLoad:
                 truck.packages.append(package)
                 packagesToLoad.remove(package)
-
-    # Load packages that may only be delivered by truck 2
-    if truck.id == 2:
+                truck.lastLoadedPackage = package
+    elif truck.id == 2:
         for id in truck2OnlyPackages:
-            package = hashTable.retrieve(id)
+            package = hashTable.retrieve(str(id))
             if package and package in packagesToLoad:
                 truck.packages.append(package)
                 packagesToLoad.remove(package)
+                truck.lastLoadedPackage = package
+    elif truck.id == 3:
+        # Add the late departure packages back to the packagesToLoad list
+        for id in lateDeparturePackages:
+            package = hashTable.retrieve(str(id))
+            if package and package not in packagesToLoad:
+                packagesToLoad.append(package)
+        for id in lateDeparturePackages:
+            package = hashTable.retrieve(str(id))
+            if package and package in packagesToLoad:
+                truck.packages.append(package)
+                packagesToLoad.remove(package)
+                truck.lastLoadedPackage = package
 
-    # Load other packages
+    # Find the package closest to the current location
     while len(truck.packages) < 16 and packagesToLoad:
-        # Find the package closest to the current location
-        # print(f"Truck's current location: {truck.currentLocation}")
-        # print(f"{addressData}")
-        closest_package = min(packagesToLoad, key=lambda package: distanceBetween(truck.currentLocation, package.address))
-        # Do not load packages that cannot leave the hub before 9:05 a.m. if it's not yet 9:05 a.m.
-        if closest_package.id in lateDeparturePackages and truck.departureTime < "09:05 AM":
+        closest_package = minDistanceFrom(truck, packagesToLoad)
+        # Check constraints for specific packages
+        if (closest_package.id in truck2OnlyPackages and truck.id != 2) or \
+           (closest_package.id in sameTruckPackages and truck.id != 1) or \
+           (closest_package.id in lateDeparturePackages and truck.id != 3):
             continue
+
         truck.packages.append(closest_package)
         packagesToLoad.remove(closest_package)
+        truck.lastLoadedPackage = closest_package
+
+    # Return the updated list of packages to load
+    return packagesToLoad
+
 
 
 def deliverPackage(truck, package):

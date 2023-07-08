@@ -21,6 +21,7 @@ def loadDistanceData(distanceData):
         for row in reader:
             distanceData.append([float(i) if i else 0.0 for i in row])
         print(f"Loaded {len(distanceData)} rows into distanceData.")
+    # print(distanceData)
 
 
 addressData = []
@@ -31,6 +32,7 @@ def loadAddressData(addressData):
         reader = csv.reader(file)
         # For each row in the CSV file, add the address to the list
         for row in reader:
-            address = ', '.join(row[1:])  # Join all parts of the address with a comma
+            address = row[2]  # Only store the street part of the address
             addressData.append(address)
-        print(addressData)
+        print(f"Loaded {len(addressData)} rows into addressData.")
+        # print(addressData)
