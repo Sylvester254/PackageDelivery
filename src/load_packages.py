@@ -2,6 +2,12 @@ from .distance import distanceBetween, minDistanceFrom
 
 
 def loadPackages(truck, packagesToLoad, hashTable):
+    """
+     This function loads packages onto a truck based on certain constraints.
+     The constraints include packages that must go out for delivery on the same truck,
+     packages that may only be delivered by truck 2, and packages that cannot leave the hub before 9:05 a.m.
+     The function also ensures that the package closest to the current location is loaded onto the truck.
+     """
     # Packages that must go out for delivery on the same truck
     sameTruckPackages = [13, 14, 15, 16, 19, 20, 25, 30]  # Include package 25 and 30
     # Packages that may only be delivered by truck 2
