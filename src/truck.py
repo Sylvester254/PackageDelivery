@@ -16,7 +16,7 @@ class Truck:
         self.currentLocation = "4001 South 700 East"
         self.packages = []
         self.speed = 18
-        self.departureTime = "09:05 AM"
+        self.departureTime = "08:00 AM"
         self.totalMileage = 0
         self.totalDeliveryTime = 0
         self.lastLoadedPackage = None

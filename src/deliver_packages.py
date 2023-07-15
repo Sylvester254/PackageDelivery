@@ -3,10 +3,11 @@ This script manages the delivery of packages by trucks.
 It includes functions to manage the delivery of packages by multiple trucks, deliver packages by a single truck, and deliver a single package.
 """
 
-from PackageDelvery.src.distance import minDistanceFrom, distanceBetween
+from src.distance import minDistanceFrom, distanceBetween
 import datetime
 
 delivered_packages = []
+package_to_truck = {}
 
 
 def manageTrucks(truck1, truck2, truck3, hashTable):
@@ -14,8 +15,13 @@ def manageTrucks(truck1, truck2, truck3, hashTable):
       This function manages the delivery of packages by three trucks.
       It determines the order in which the trucks should deliver their packages based on the delivery deadlines of the packages.
       """
+
+    for truck in [truck1, truck2, truck3]:
+        for package in truck.packages:
+            package_to_truck[package.id] = truck.id
+
     # Convert the truck's departure time to a datetime object
-    current_time = datetime.datetime.strptime("09:05 AM", "%H:%M %p")
+    current_time = datetime.datetime.strptime(truck1.departureTime, "%H:%M %p")
 
     # Deliver packages for Truck 1
     delivered_packages1 = truckDeliverPackages(truck1, hashTable, current_time)
@@ -41,8 +47,6 @@ def manageTrucks(truck1, truck2, truck3, hashTable):
 
 
     delivered_packages3 = truckDeliverPackages(truck3, hashTable, truck3_start_time)
-
-
 
 
 def truckDeliverPackages(truck, hashTable, current_time):

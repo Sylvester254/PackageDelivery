@@ -9,11 +9,11 @@ def loadPackages(truck, packagesToLoad, hashTable):
      The function also ensures that the package closest to the current location is loaded onto the truck.
      """
     # Packages that must go out for delivery on the same truck
-    sameTruckPackages = [13, 14, 15, 16, 19, 20, 25, 30]  # Include package 25 and 30
+    sameTruckPackages = [13, 14, 15, 16, 19, 20, 30]  # Include package 30
     # Packages that may only be delivered by truck 2
     truck2OnlyPackages = [3, 18, 36, 38, 6]  # Include package 6
     # Packages that cannot leave the hub before 9:05 a.m
-    lateDeparturePackages = [28, 32]  # Remove package 6 and 25
+    lateDeparturePackages = [25, 28, 32]
 
     # Remove the late departure packages from the packagesToLoad list
     if truck.id != 3:
